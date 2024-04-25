@@ -18,8 +18,8 @@ const map = L.map('map').setView([48.8566, 2.3522], 13);
             .then(data => {
                 console.log(data); 
                 data.records.forEach(record => {
-                    const lat = record.fields.coordonnees_geo[1];
-                    const lon = record.fields.coordonnees_geo[0];
+                    const lat = record.fields.lat;
+                    const lon = record.fields.lon;
                     console.log(lat, lon); 
     
                     L.marker([lat, lon]).addTo(map);
