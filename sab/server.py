@@ -12,8 +12,9 @@ class VelibData:
         current_time = time.time()
         if current_time - self.last_request_time < 300 and self.data:
             return self.data
-        
-        api_url = "https://opendata.paris.fr//api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=100"
+
+        #utilisation de l'url de l'open data de velib directement pour contourner la limite de 100 imposée par l'open data de Paris
+        api_url = "https://velib-metropole-opendata.smovengo.cloud/opendata/Velib_Metropole/station_information.json"
         try:
             response = requests.get(api_url)
             if response.status_code == 200:
