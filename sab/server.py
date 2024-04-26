@@ -22,7 +22,7 @@ class VelibData:
                 self.data = response.json()
                 return self.data
         except:
-            print("Erreur lors de la rÃ©cupÃ©ration des donnÃ©es Velib.")
+            print("Erreur lors de la récupération des données Velib.")
         
         return None
 
@@ -41,11 +41,12 @@ try:
         if data:
             response = "HTTP/1.1 200 OK\nContent-Type: application/json\nAccess-Control-Allow-Origin: *\n\n" + json.dumps(data)
             socket_client.sendall(response.encode())
+            time.sleep(1)
         else:
             error_message = "HTTP/1.1 500 Internal Server Error\nContent-Type: text/plain\n\nErreur lors de la récupération des données Velib."
             socket_client.sendall(error_message.encode())
         socket_client.close()
-except KeyboardInterrupt: #ajouté car je n'arrivais pas à interronpre mon serveur avec ctrl + c mais on peut l'enlever, ça change rien
+except KeyboardInterrupt: #ajouté car je n'arrivais pas à interrompre mon serveur avec ctrl + c mais on peut l'enlever, ça change rien
     print("Interruption du serveur par l'utilisateur.")
 except Exception:
     print("Erreur lors de l'exÃ©cution du serveur.")
