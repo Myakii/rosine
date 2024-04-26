@@ -8,8 +8,9 @@ const map = L.map('map').setView([48.8566, 2.3522], 13);
     //L.marker([48.8584, 2.2945]).addTo(map).bindPopup('Tour Eiffel');
 
     function fetchVelibData() {
-        fetch('http://localhost:3333')
-            .then(response => {
+        fetch('http://localhost:3000')
+            .then(data => {
+		console.log(data)
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des données Velib.');
                 }
@@ -17,9 +18,9 @@ const map = L.map('map').setView([48.8566, 2.3522], 13);
             })
             .then(data => {
                 console.log(data); 
-                data.records.forEach(record => {
-                    const lat = record.fields.lat;
-                    const lon = record.fields.lon;
+                data.data.stations.forEach(station => {
+                    const lat = station.lat;
+                    const lon = station.lon;
                     console.log(lat, lon); 
     
                     L.marker([lat, lon]).addTo(map);
