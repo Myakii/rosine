@@ -1,5 +1,9 @@
 import socket
+<<<<<<< HEAD
 from flask import request
+=======
+import requests
+>>>>>>> 23808cb11f50298ab6c3aaf9d3e402210f2a6ce5
 import json
 import time
 
@@ -13,7 +17,7 @@ class VelibData:
         if current_time - self.last_request_time < 300 and self.data:
             return self.data
         
-        api_url = "https://opendata.paris.fr//api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=100"
+        api_url = "https://velib-metropole-opendata.smovengo.cloud/opendata/Velib_Metropole/station_information.json"
         try:
             response = request.get(api_url)
             if response.status_code == 200:
@@ -21,7 +25,7 @@ class VelibData:
                 self.data = response.json()
                 return self.data
         except:
-            print("Erreur lors de la rÃ©cupÃ©ration des donnÃ©es Velib.")
+            print("Erreur lors de la récupération des données Velib.")
         
         return None
 
@@ -32,7 +36,7 @@ try:
     port = 8080
     socket_server.bind((host, port))
     socket_server.listen(5)
-    print("Serveur en Ã©coute sur le port 3333.")
+    print("Serveur en écoute sur le port 3333.")
 
     while True:
         socket_client, addr = socket_server.accept()
@@ -40,11 +44,11 @@ try:
         if data:
             socket_client.sendall(json.dumps(data).encode())
         else:
-            socket_client.sendall("Erreur lors de la rÃ©cupÃ©ration des donnÃ©es Velib.")
+            socket_client.sendall("Erreur lors de la récupération des données Velib.")
         socket_client.close()
 except KeyboardInterrupt:
     print("Interruption du serveur par l'utilisateur.")
 except Exception:
-    print("Erreur lors de l'exÃ©cution du serveur.")
+    print("Erreur lors de l'exécution du serveur.")
 finally:
     socket_server.close()
