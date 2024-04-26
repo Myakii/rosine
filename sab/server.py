@@ -30,20 +30,22 @@ try:
     velib_data = VelibData()
     socket_server = socket.socket()
     host = socket.gethostname()
-    port = 3333
+    port = 3000
     socket_server.bind((host, port))
     socket_server.listen(5)
-    print("Serveur en Ã©coute sur le port 3333.")
+    print("Serveur en Ã©coute sur le port 3000.")
 
     while True:
         socket_client, addr = socket_server.accept()
         data = velib_data.fetch_data()
         if data:
-            socket_client.sendall(json.dumps(data).encode())
+            response = "HTTP/1.1 200 OK\nContent-Type: application/json\nAccess-Control-Allow-Origin: *\n\n" + json.dumps(data)
+            socket_client.sendall(response.encode())
         else:
-            socket_client.sendall("Erreur lors de la rÃ©cupÃ©ration des donnÃ©es Velib.")
+            error_message = "HTTP/1.1 500 Internal Server Error\nContent-Type: text/plain\n\nErreur lors de la récupération des données Velib."
+            socket_client.sendall(error_message.encode())
         socket_client.close()
-except KeyboardInterrupt:
+except KeyboardInterrupt: #ajouté car je n'arrivais pas à interronpre mon serveur avec ctrl + c mais on peut l'enlever, ça change rien
     print("Interruption du serveur par l'utilisateur.")
 except Exception:
     print("Erreur lors de l'exÃ©cution du serveur.")
