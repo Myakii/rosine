@@ -1,5 +1,5 @@
 import socket
-import request
+from flask import request
 import json
 import time
 
@@ -15,7 +15,7 @@ class VelibData:
         
         api_url = "https://opendata.paris.fr//api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=100"
         try:
-            response = requests.get(api_url)
+            response = request.get(api_url)
             if response.status_code == 200:
                 self.last_request_time = current_time
                 self.data = response.json()
@@ -29,7 +29,7 @@ try:
     velib_data = VelibData()
     socket_server = socket.socket()
     host = socket.gethostname()
-    port = 3333
+    port = 8080
     socket_server.bind((host, port))
     socket_server.listen(5)
     print("Serveur en Ã©coute sur le port 3333.")
