@@ -32,7 +32,7 @@ try:
     port = 3333
     socket_server.bind((host, port))
     socket_server.listen(5)
-    print("Serveur en Ã©coute sur le port 3333.")
+    print("Serveur en écoute sur le port 3333.")
 
     while True:
         socket_client, addr = socket_server.accept()
