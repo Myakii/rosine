@@ -1,35 +1,51 @@
-from database import connect_to_database
+from flask import Flask
+import mysql.connector
 
-def add_favorite_with_json_id(user_id, json_file_id):
-    # Charger le fichier JSON correspondant à l'ID
-    try:
-        with open(f'{json_file_id}.json', 'r') as file:
-            favorite_data = json.load(file)
-    except FileNotFoundError:
-        return {"message": "Page introuvable"}, 404
+app = Flask(__name__)
 
-    # Appeler la fonction pour ajouter le favori
-    add_favorite(user_id, favorite_data)
+def connect_to_database():
+    connection = mysql.connector.connect(
+        host="hostname",
+        user='root',
+        password='',
+        database='velib'
+    )
+    return connection
 
-    return {"message": "Favorite ajouté avec succès"}
+def insert_favorite(user_id, favorite_data):
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    query = "INSERT INTO favorites (user_id, favorite_data) VALUES (%s, %s)"
+    cursor.execute(query, (user_id, favorite_data))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
 
 def delete_favorite(user_id, favorite_id):
-    # Fonction pour supprimer un favori
-    if favorite:
-        # Supprimer le favori de la base de données
-        session.delete(favorite)
-        session.commit()
-        print("Favori supprimé avec succès.")
-    else:
-        print("Aucun favori trouvé.")
+    connection = connect_to_database()
+    cursor = connection.cursor()
 
-def get_favorites(user_id):
-    # Fonction pour récupérer les favoris d'un utilisateur
-    if favorites:
-        return favorites
-    else:
-        return []
+    query = "DELETE FROM favorites WHERE user_id = %s AND id = %s"
+    cursor.execute(query, (user_id, favorite_id))
+    connection.commit()
 
-favorites = get_favorites(user_id)
-for favorite in favorites:
-    print(favorite.id, favorite.name)
+    cursor.close()
+    connection.close()
+
+def get_user_favorites(user_id):
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    query = "SELECT * FROM favorites WHERE user_id = %s"
+    cursor.execute(query, (user_id,))
+    favorites = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return favorites
+
+if __name__ == "__main__":
+    app.run(debug=True)

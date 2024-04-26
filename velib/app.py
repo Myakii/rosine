@@ -1,32 +1,43 @@
 from flask import Flask, request, jsonify
-from favorites import add_favorite, delete_favorite, get_favorites
-from flask_sqlalchemy import SQLAlchemy
+import mysql.connector
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "<p>Bienvenue</p>"
+connection = mysql.connector.connect(
+    host="hostname",
+    user='root',
+    password='',
+    database='velib'
+)
+cursor = connection.cursor()
 
-@app.route('/add_favorite', methods=['POST'])
-def add_favorite_route():
-    data = request.get_json()
-    # Appel à la fonction pour ajouter un favori
-    # Exemple : add_favorite(data['user_id'], data['favorite_data'])
-    return jsonify({"message": "Favorite added successfully"})
+@app.route('/favorites', methods=['POST'])
+def add_favorite():
+    data = request.json
+    user_id = data.get('user_id')
+    favorite_data = data.get('favorite_data')
 
-@app.route('/delete_favorite/<user_id>/<favorite_id>', methods=['DELETE'])
-def delete_favorite_route(user_id, favorite_id):
-    # Appel à la fonction pour supprimer un favori
-    # Exemple : delete_favorite(user_id, favorite_id)
-    return jsonify({"message": "Favorite deleted successfully"})
+    query = "INSERT INTO favorites (user_id, favorite_data) VALUES (%s, %s)"
+    cursor.execute(query, (user_id, favorite_data))
+    connection.commit()
 
-@app.route('/get_favorites/<user_id>', methods=['GET'])
-def get_favorites_route(user_id):
-    # Appel à la fonction pour récupérer les favoris d'un utilisateur
-    # Exemple : favorites = get_favorites(user_id)
-    # return jsonify(favorites)
-    return jsonify({"message": "Favorites retrieved successfully"})
+    return jsonify({"message": "Favorite ajouté avec succès"})
+
+@app.route('/favorites/<int:favorite_id>', methods=['DELETE'])
+def delete_favorite(favorite_id):
+    query = "DELETE FROM favorites WHERE id = %s"
+    cursor.execute(query, (favorite_id,))
+    connection.commit()
+
+    return jsonify({"message": "Favori supprimé avec succès"})
+
+@app.route('/favorites/<int:user_id>', methods=['GET'])
+def get_user_favorites(user_id):
+    query = "SELECT * FROM favorites WHERE user_id = %s"
+    cursor.execute(query, (user_id,))
+    favorites = cursor.fetchall()
+
+    return jsonify(favorites)
 
 if __name__ == "__main__":
     app.run(debug=True)
