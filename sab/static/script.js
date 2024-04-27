@@ -1,4 +1,3 @@
-//execution de fetchVelibData au chargement de la page pour les afficher directement sur la map
 window.addEventListener("load", fetchVelibData);
 
 const map = L.map("map").setView([48.8566, 2.3522], 13);
@@ -10,7 +9,7 @@ const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 function fetchVelibData() {
-  //on récupère les données à l'url définie dans app.py
+  //On récupère les données à l'url définie dans app.py
   fetch("http://localhost:5000/velib")
     .then((response) => {
       if (!response.ok) {
@@ -20,11 +19,14 @@ function fetchVelibData() {
     })
     .then((data) => {
       console.log(data);
-      data.data.stations.forEach((station) => {
-        const lat = station.lat;
-        const lon = station.lon;
+      data.forEach((station) => {
+        const lat = station.coordonnees_geo.lat;
+        const lon = station.coordonnees_geo.lon;
         console.log(lat, lon);
-        L.marker([lat, lon]).addTo(map);
+        const marker = L.marker([lat, lon]).addTo(map);
+
+        const popupContent = `<b>${station.name}</b><br/>Vélos disponibles : ${station.numbikesavailable}`;
+        marker.bindPopup(popupContent); //Affiche un popup avec les informations de la station
       });
     })
     .catch((error) => {
