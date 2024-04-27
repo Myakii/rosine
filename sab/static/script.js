@@ -1,6 +1,8 @@
 window.addEventListener("load", fetchVelibData);
 
+//On importe la carte de la bibliothèque leaflet et on régle un la setView pour avoir une vue sur paris 
 const map = L.map("map").setView([48.8566, 2.3522], 13);
+
 
 const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   minZoom: 13,
@@ -9,6 +11,7 @@ const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 function fetchVelibData() {
+
   //On récupère les données à l'url définie dans app.py
   fetch("http://localhost:5000/velib")
     .then((response) => {
@@ -17,6 +20,7 @@ function fetchVelibData() {
       }
       return response.json();
     })
+    // On récupère la latitude et la longétitude des stations
     .then((data) => {
       console.log(data);
       data.forEach((station) => {
@@ -24,9 +28,10 @@ function fetchVelibData() {
         const lon = station.coordonnees_geo.lon;
         console.log(lat, lon);
         const marker = L.marker([lat, lon]).addTo(map);
-
+        
+         //Affiche un popup avec les informations de la station
         const popupContent = `<b>${station.name}</b><br/>Vélos disponibles : ${station.numbikesavailable}`;
-        marker.bindPopup(popupContent); //Affiche un popup avec les informations de la station
+        marker.bindPopup(popupContent);
       });
     })
     .catch((error) => {
