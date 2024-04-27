@@ -1,20 +1,22 @@
 import socket
-import requests
 import json
 import time
+import requests
 
 class VelibData:
+    #utilisation d'une classe pour une question de clead code
     def __init__(self):
         self.last_request_time = 0
         self.data = None
     
     def fetch_data(self):
+        #comparaison en amont avec la date du dernier appel, s'il date de moins de 300s, on retourne data
         current_time = time.time()
         if current_time - self.last_request_time < 300 and self.data:
             return self.data
-
-        #utilisation de l'url de l'open data de velib directement pour contourner la limite de 100 imposée par l'open data de Paris
+        #utilisation de l'opendata de Velib et non Paris car celui de Paris bloquait les requetes à 100 stations
         api_url = "https://velib-metropole-opendata.smovengo.cloud/opendata/Velib_Metropole/station_information.json"
+        #sinon, on appelle l'api, stocke la date actuelle puis les données récupérées
         try:
             response = requests.get(api_url)
             if response.status_code == 200:
@@ -33,22 +35,19 @@ try:
     port = 3000
     socket_server.bind((host, port))
     socket_server.listen(5)
-    print("Serveur en Ã©coute sur le port 3000.")
+    print("Serveur en écoute sur le port 3000.")
 
     while True:
         socket_client, addr = socket_server.accept()
         data = velib_data.fetch_data()
         if data:
-            response = "HTTP/1.1 200 OK\nContent-Type: application/json\nAccess-Control-Allow-Origin: *\n\n" + json.dumps(data)
-            socket_client.sendall(response.encode())
-            time.sleep(1)
+            socket_client.sendall(json.dumps(data).encode())
         else:
-            error_message = "HTTP/1.1 500 Internal Server Error\nContent-Type: text/plain\n\nErreur lors de la récupération des données Velib."
-            socket_client.sendall(error_message.encode())
+            socket_client.sendall("Erreur lors de la récupération des données Velib.")
         socket_client.close()
-except KeyboardInterrupt: #ajouté car je n'arrivais pas à interrompre mon serveur avec ctrl + c mais on peut l'enlever, ça change rien
+except KeyboardInterrupt: #Pas forcément utile mais c'est apparemment une bonne pratique
     print("Interruption du serveur par l'utilisateur.")
 except Exception:
-    print("Erreur lors de l'exÃ©cution du serveur.")
+    print("Erreur lors de l'exécution du serveur.")
 finally:
     socket_server.close()
