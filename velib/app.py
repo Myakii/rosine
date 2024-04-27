@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect
 import mysql.connector
+import json
 
 app = Flask(__name__)
 
@@ -31,7 +32,7 @@ def add_favorite():
     id_favoris = data.get('id_favoris')
     id_user = data.get('id_user')
     nom = data.get('nom')
-    data_json = data.get('data_json')
+    data_json = json.dumps(data.get('data_json'))
 
     query = "INSERT INTO favoris (id_favoris, id_user, nom, data_json) VALUES (%s, %s, %s, %s)"
     execute_query(query, (id_favoris, id_user, nom, data_json))
@@ -39,7 +40,7 @@ def add_favorite():
 
     return jsonify({"message": "Favori ajouté avec succès"})
 
-@app.route('/favoris/<int:id_favoris>', methods=['DELETE'])
+@app.delete('/favoris/<int:id_favoris>')
 def delete_favorite(id_favoris):
     connection = get_database_connection()
     query = "DELETE FROM favoris WHERE id_favoris = %s"
