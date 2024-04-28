@@ -9,10 +9,11 @@
 
 <body>
     <h1>Détails du Favori</h1>
-    <p>Nom: {{ favoris.nom }}</p>
-    <p>Informations: {{ favoris.data_json }}</p>
-    <a href="/favoris/{{ favoris.id_favoris }}">Supprimer</a>
-    <a href="/favoris/modification/{{ favoris.id_favoris }}">
-    <button>Modifier</button></a>
+    {% for favori in favoris %}
+        <p>Nom: {{ favori.nom }}</p>
+        <p>Informations: {{ favori.data_json }}</p>
+        <a href="/favoris/{{ favori.id_favoris }}">Supprimer</a>
+        <a href="/favoris/modification/{{ favori.id_favoris }}"><button>Modifier</button></a>
+    {% endfor %}
 </body>
 </html>

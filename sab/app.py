@@ -43,10 +43,6 @@ def execute_query(query, data=None):
     connection.commit()
     connection.close()
 
-@app.route("/favorites")
-def favorites():
-    return render_template("favorites.html")
-
 @app.route("/favoris", methods=["GET", "POST"])
 def favoris():
     if request.method == "POST":
@@ -127,7 +123,18 @@ def afficher_favoris(id_favoris):
     cursor.execute(query, (id_favoris,))
     favoris = cursor.fetchone()
     connection.close()
-    return render_template('favoris.html', favoris=favoris)
+    return render_template('favorites.html', favoris=favoris)
+
+
+@app.route("/favorites")
+def favorites():
+    connection = get_database_connection()
+    cursor = connection.cursor(dictionary=True)
+    query = "SELECT * FROM favoris"
+    cursor.execute(query,)
+    favoris = cursor.fetchall()
+    connection.close()
+    return render_template('favorites.html', favoris=favoris)
 
 if __name__ == "__main__":
     app.run(debug=True)
