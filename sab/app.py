@@ -50,7 +50,6 @@ def favorites():
 @app.route("/favoris", methods=["GET", "POST"])
 def favoris():
     if request.method == "POST":
-        id_favoris = request.form.get("id_favoris")
         id_user = request.form.get('id_user')
         nom = request.form.get('nom')
         data_json = json.dumps({
@@ -62,14 +61,14 @@ def favoris():
         })
 
         connection = get_database_connection()
-        query = "INSERT INTO favoris (id_favoris, id_user, nom, data_json) VALUES (%s, %s, %s, %s)"
-        execute_query(query, (id_favoris, id_user, nom, data_json))
+        query = "INSERT INTO favoris (id_user, nom, data_json) VALUES (%s, %s, %s)"
+        execute_query(query, (id_user, nom, data_json))
         connection.close()
 
         return jsonify({"message": "Favori ajouté avec succès"})
 
     else:
-        id_favoris = request.args.get("id_favoris")
+        stationcode = request.args.get("stationcode")
         nom = request.args.get("nom")
         numbikesavailable = request.args.get("numbikesavailable")
         numdocksavailable = request.args.get("numdocksavailable")
@@ -77,7 +76,7 @@ def favoris():
         mechanical = request.args.get("mechanical")
 
         station = {
-            "stationcode": id_favoris,
+            "stationcode": stationcode,
             "name": nom,
             "numbikesavailable": numbikesavailable,
             "numdocksavailable": numdocksavailable,

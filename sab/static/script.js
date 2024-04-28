@@ -30,7 +30,7 @@ function fetchVelibData() {
         const marker = L.marker([lat, lon]).addTo(map);
         
         // Créer le lien avec les informations de la station en tant que paramètres de requête
-        const url = `/favoris?id_favoris=${station.stationcode}&id_user=123&nom=${station.name}&numbikesavailable=${numbikesavailable}&numdocksavailable=${numdocksavailable}&ebike=${ebike}&mechanical=${mechanical}`;
+        const url = `/favoris?&id_user=123&nom=${station.name}&numbikesavailable=${numbikesavailable}&numdocksavailable=${numdocksavailable}&ebike=${ebike}&mechanical=${mechanical}`;
 
         // Affiche un popup avec les informations de la station
         const popupContent = `<b>${station.name}</b><br/>Vélos disponibles : ${station.numbikesavailable} <a href="${url}" data-index="${index}">Ajouter en favoris</a>`;
