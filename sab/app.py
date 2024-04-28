@@ -104,5 +104,79 @@ def afficher_favoris(id_favoris):
     connection.close()
     return render_template('favoris.html', favoris=favoris)
 
+
+# Configuration MySQL à modifier avec vraie bdd
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'your_username'
+app.config['MYSQL_PASSWORD'] = 'your_password'
+app.config['MYSQL_DB'] = 'your_database_name'
+
+mysql = MySQL(app)
+
+@app.route("/")
+def homepage():
+    # Récupère le prenom dans la session
+    first_name = session["first_name"] if "first_name" in session else None
+    local_user = request.cookies.get("local_user")
+    # Affichage
+    return render_template("index.html.jinja", first_name=first_name, local_user=local_user)
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        # Récupère données formulaire
+        username = request.form["username"]
+        password = request.form["password"]
+
+        # Connexion à la bdd
+        cur = mysql.connection.cursor()
+
+        # Vérifie si user existe déjà
+        cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+        user = cur.fetchone()
+
+        if user:
+            return "Cet utilisateur existe déjà !"
+        else:
+            # Insertion dans la bdd
+            cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+            mysql.connection.commit()
+
+            # Fermeture du curseur
+            cur.close()
+
+            return redirect(url_for("homepage"))
+
+    return render_template("register.html.jinja")
+
+# Route de connexion
+@app.route("/login", methods=["POST"])
+def login():
+
+    # Prépare la réponse
+    response = make_response(redirect(url_for("homepage")))
+    # Récupère les infos
+    first_name = request.form["first_name"]
+    local_user = "local_user" in request.form
+    # Gestion de la session
+    session["first_name"] = first_name
+
+#Vérifie si le user a coché la case "rester connecté", définit cookie pour user si la réponse est oui
+    if local_user:
+        response.set_cookie("local_user", first_name)
+#Supprime cookie sinon
+    else:
+        response.delete_cookie("local_user")
+    # Redirection
+    return response
+
+# Déconnexion
+@app.route("/deconnexion")
+def deconnexion():
+    # Retire la clé prenom de la session
+    session.pop("first_name", None)
+    # Redirection
+    return redirect(url_for("homepage"))
+
 if __name__ == "__main__":
     app.run(debug=True)
