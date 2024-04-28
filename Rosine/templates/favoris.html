@@ -19,7 +19,7 @@
 
 <script>
     document.getElementById('deleteForm').addEventListener('submit', function(event) {
-        event.preventDefault(); 
+        event.preventDefault(); // Empêche l'envoi du formulaire par défaut
 
         fetch(this.action, {
             method: 'DELETE',
@@ -31,11 +31,13 @@
             if (!response.ok) {
                 throw new Error('Erreur lors de la suppression du favori');
             }
-
-            window.location.href = '/favoris'; 
+            // Gérer la réponse en fonction de vos besoins
+            // Par exemple, rediriger vers une autre page
+            window.location.href = '/favoris'; // Rediriger vers une autre page après la suppression
         })
         .catch(error => {
             console.error('Erreur:', error);
+            // Gérer l'erreur, afficher un message à l'utilisateur, etc.
         });
     });
 </script>
