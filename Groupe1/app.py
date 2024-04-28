@@ -157,8 +157,9 @@ def register():
 
     return render_template("register.html")
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -173,8 +174,8 @@ def login():
             return redirect(url_for("accueil"))
         else:
             return "Nom d'utilisateur ou mot de passe incorrect"
-
-    return render_template("connexion.html")
+    else:
+        return render_template("connexion.html")
 
 @app.route("/deconnexion")
 def deconnexion():
