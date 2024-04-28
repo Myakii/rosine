@@ -8,7 +8,7 @@ velib_data = VelibData()
 def accueil():
     return render_template("index.html")
 
-@app.route("/favoris")
+@app.route("/favorites")
 def accueil():
     return render_template("favorites.html")
 
