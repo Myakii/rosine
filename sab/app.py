@@ -1,4 +1,6 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request, redirect
+import mysql.connector
+import json
 from server import VelibData
 
 app = Flask(__name__)
