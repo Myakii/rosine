@@ -10,8 +10,10 @@
     <p>Bonjour, {{ prenom }}!</p>
     <a href="/deconnexion">Déconnexion</a>
     <form action="/login" method="post">
-        <input type="text" name="prenom" placeholder="Prénom" required>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="text" pasword="password" placeholder="Password" required>
         <button type="submit">Connexion</button>
+    
     </form>
     <a href="/register">Inscription</a> ou <a href="/login">Connexion</a>
 </body>
