@@ -1,9 +1,12 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session, make_response
 import mysql.connector
 import json
+from server import VelibData
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.secret_key = b"flyyoufools"
+velib_data = VelibData()
 
 # Connexion à la base de données
 db_config = {
@@ -34,12 +37,16 @@ def accueil():
 def velib():
     data = get_velib_data()
     response = jsonify(data)
+    #ajout des headers pour les autorisations CORS
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
-
 def get_velib_data():
-    # À remplacer avec l'implémentation pour récupérer les données Velib
-    pass
+    data = velib_data.fetch_data()
+    if data:
+        return data
+    else:
+        return {"error": "Erreur lors de la récupération des données Velib."}
+
 
 @app.route("/favoris", methods=["GET", "POST"])
 def favoris():
