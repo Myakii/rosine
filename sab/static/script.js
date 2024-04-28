@@ -1,6 +1,6 @@
 window.addEventListener("load", fetchVelibData);
 
-//On importe la carte de la bibliothèque leaflet et on régle un la setView pour avoir une vue sur paris 
+//On importe la carte de la bibliothèque leaflet et on régle un la setView pour avoir une vue sur paris
 const map = L.map("map").setView([48.8566, 2.3522], 13);
 
 //On initialise une couche de tuiles OpenStreetMap avec une attribution spécifiée et l'ajoute à la carte Leaflet, avec un niveau de zoom minimum de 13.
@@ -28,7 +28,7 @@ function fetchVelibData() {
         const ebike = station.ebike;
         const mechanical = station.mechanical;
         const marker = L.marker([lat, lon]).addTo(map);
-        
+
         // Créer le lien avec les informations de la station en tant que paramètres de requête
         const url = `/favoris?&id_user=123&nom=${station.name}&numbikesavailable=${numbikesavailable}&numdocksavailable=${numdocksavailable}&ebike=${ebike}&mechanical=${mechanical}`;
 
@@ -41,14 +41,3 @@ function fetchVelibData() {
       console.error(error);
     });
 }
-
-// button de redirection 
-
-// Récupérer le bouton par son ID
-const favoris = document.getElementById('favoris');
-
-// Ajouter un gestionnaire d'événements au clic sur le bouton
-bouton.addEventListener('click', function() {
-  // Rediriger vers la page 2
-  window.location.href= 'favorites.html';
-});
