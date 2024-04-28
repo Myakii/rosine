@@ -9,7 +9,7 @@ def accueil():
     return render_template("index.html")
 
 @app.route("/favorites")
-def accueil():
+def favorites():
     return render_template("favorites.html")
 
 #récupération des données à une autre route en important la variable depuis server.py, lancé en amont et qui aura récupéré les données de l'api
