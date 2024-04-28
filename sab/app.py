@@ -2,9 +2,11 @@ from flask import Flask, render_template, jsonify, request, redirect
 import mysql.connector
 import json
 from server import VelibData
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 velib_data = VelibData()
+app.secret_key = b"flyyoufools"
 
 @app.route("/")
 def accueil():
