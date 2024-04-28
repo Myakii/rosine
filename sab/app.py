@@ -139,6 +139,8 @@ app.config['MYSQL_DB'] = 'your_database_name'
 
 mysql = MySQL(app)
 
+ysql = MySQL(app)
+
 @app.route("/")
 def homepage():
     # Récupère le prenom dans la session
@@ -151,8 +153,8 @@ def homepage():
 def register():
     if request.method == "POST":
         # Récupère données formulaire
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get["username"]
+        password = request.form.get["password"]
 
         # Connexion à la bdd
         cur = mysql.connection.cursor()
@@ -173,7 +175,7 @@ def register():
 
             return redirect(url_for("homepage"))
 
-    return render_template("register.html.jinja")
+    return render_template("register.html")
 
 # Route de connexion
 @app.route("/login", methods=["POST"])
@@ -200,10 +202,14 @@ def login():
 @app.route("/deconnexion")
 def deconnexion():
     # Retire la clé prenom de la session
-    session.pop("first_name", None)
+    session.pop("username", None)
     # Redirection
     return redirect(url_for("homepage"))
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
