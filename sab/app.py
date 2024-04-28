@@ -148,13 +148,6 @@ mysql = MySQL(app)
 
 ysql = MySQL(app)
 
-@app.route("/")
-def homepage():
-    # Récupère le prenom dans la session
-    first_name = session["first_name"] if "first_name" in session else None
-    local_user = request.cookies.get("local_user")
-    # Affichage
-    return render_template("index.html.jinja", first_name=first_name, local_user=local_user)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -180,30 +173,31 @@ def register():
             # Fermeture du curseur
             cur.close()
 
-            return redirect(url_for("homepage"))
+            return render_template("index.html")
 
     return render_template("register.html")
 
 # Route de connexion
 @app.route("/login", methods=["POST"])
 def login():
+    if request.method == "POST":
+        # Récupère données formulaire
+        username = request.form.get["username"]
+        password = request.form.get["password"]
 
-    # Prépare la réponse
-    response = make_response(redirect(url_for("homepage")))
-    # Récupère les infos
-    first_name = request.form["first_name"]
-    local_user = "local_user" in request.form
-    # Gestion de la session
-    session["first_name"] = first_name
+        cur = mysql.connection.cursor()
 
-#Vérifie si le user a coché la case "rester connecté", définit cookie pour user si la réponse est oui
-    if local_user:
-        response.set_cookie("local_user", first_name)
-#Supprime cookie sinon
-    else:
-        response.delete_cookie("local_user")
-    # Redirection
-    return response
+        # Vérifie si user existe déjà
+        cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username,password))
+        user = cur.fetchone()
+        
+        if user:
+            return redirect(url_for("accueil"))
+
+        else:
+            return "Username ou mot de passe inconnu"
+      
+    return render_template("connexion.html")
 
 # Déconnexion
 @app.route("/deconnexion")
@@ -211,12 +205,8 @@ def deconnexion():
     # Retire la clé prenom de la session
     session.pop("username", None)
     # Redirection
-    return redirect(url_for("homepage"))
+    return redirect(url_for("accueil"))
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
