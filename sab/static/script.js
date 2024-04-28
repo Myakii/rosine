@@ -42,3 +42,13 @@ function fetchVelibData() {
     });
 }
 
+// button de redirection 
+
+// Récupérer le bouton par son ID
+const favoris = document.getElementById('favoris');
+
+// Ajouter un gestionnaire d'événements au clic sur le bouton
+bouton.addEventListener('click', function() {
+  // Rediriger vers la page 2
+  window.location.href= 'favorites.html';
+});

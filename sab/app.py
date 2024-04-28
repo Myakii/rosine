@@ -128,6 +128,7 @@ def afficher_favoris(id_favoris):
     cursor.execute(query, (id_favoris,))
     favoris = cursor.fetchone()
     connection.close()
-    
-    return render_template('favorites.html', favoris=favoris)
+    return render_template('favoris.html', favoris=favoris)
 
+if __name__ == "__main__":
+    app.run(debug=True)
